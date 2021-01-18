@@ -9,19 +9,19 @@ class TicketVendingSystem
     @created_at = Date.today
   end
 
-    # 販売機能実行
-    def exec_transaction
-      puts '0. チケットを購入する'
-      puts '1. 終了'
-      num = gets.chomp.to_i
-      if num == 0
-        transaction
-      elsif num == 1
-        exit
-      else
-        puts '不正な入力です'
-      end
+  # 販売機能実行
+  def exec_transaction
+    puts '0. チケットを購入する'
+    puts '1. 終了'
+    num = gets.chomp.to_i
+    if num == 0
+      transaction
+    elsif num == 1
+      exit
+    else
+      puts '不正な入力です'
     end
+  end
 
   # チケット購入機能
   def transaction
