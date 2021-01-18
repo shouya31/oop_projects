@@ -77,4 +77,4 @@ class TicketVendingSystem
   end
 end
 
-TicketVendingSystem.new(rides).exec_transaction
+TicketVendingSystem.new().exec_transaction
