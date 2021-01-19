@@ -10,15 +10,6 @@ class Ride
   end
 end
 
-class Ticket
-  attr_reader :ride, :date
-
-  def initialize(ride, date)
-    @ride = ride
-    @date = date
-  end
-end
-
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
   attr_reader :rides, :created_at
@@ -45,8 +36,8 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ticket = take_order
-    serve_ticket(ticket)
+    ride = take_order
+    serve_ticket(ride)
   end
 
   # チケット一覧表示機能
@@ -65,17 +56,17 @@ class TicketVendingSystem
 
   # チケット選択機能
   def take_order
-    ticket = Ticket.new(rides[gets.to_i], created_at)
-    puts "#{ticket.ride.name}が選択されました"
-    ticket
+    ride = rides[gets.to_i]
+    puts "#{ride.name}が選択されました"
+    ride
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def serve_ticket(ride)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ticket.ride.fee)
+      charge = calc_change(payment, ride.fee)
 
       if charge >= 0
         break
