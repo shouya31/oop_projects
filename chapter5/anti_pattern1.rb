@@ -1,5 +1,18 @@
 require 'date'
 
+# お客さんをモデリングしたクラス
+class User
+  attr_accessor :name, :age
+
+  def initialize
+    puts 'ユーザー登録を行います'
+    puts 'ユーザー名を入力してください'
+    @name = gets.chomp
+    puts '年齢を入力してください'
+    @age = gets.chomp.to_i
+  end
+end
+
 class Ride
   attr_reader :name, :fee, :exp_age
 
@@ -12,20 +25,24 @@ end
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :rides, :created_at
+  attr_reader :users, :rides, :created_at
 
   def initialize(rides)
     @rides = rides
+    @users = []
     @created_at = Date.today
   end
 
   # 販売機能実行
   def exec_transaction
+    # ユーザーの作成
+    new_user = User.new
+    @users << new_user
     puts '0. チケットを購入する'
     puts '1. 終了'
     num = gets.chomp.to_i
     if num == 0
-      transaction
+      transaction(new_user)
     elsif num == 1
       exit
     else
@@ -34,23 +51,21 @@ class TicketVendingSystem
   end
 
   # チケット購入機能
-  def transaction
-    display_tickets
-    ride = take_order
-    serve_ticket(ride)
+  def transaction(user)
+    display_tickets(user)
+    ticket = take_order
+    serve_ticket(ticket)
   end
 
   # チケット一覧表示機能
   def display_tickets
-    puts '年齢を入力してください'
-    age = gets.chomp.to_i
-    if age < 5
+    if user.age < 5
       puts '申し訳ございません。お客様のお年齢では選択できるアトラクションはございません。'
       exit
     end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
     rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}" if age > ride.exp_age
+      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}" if user.age > ride.exp_age
     end
   end
 
@@ -62,11 +77,11 @@ class TicketVendingSystem
   end
 
   # 決済処理
-  def serve_ticket(ride)
+  def serve_ticket(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ride.fee)
+      charge = calc_change(payment, ticket.ride.fee)
 
       if charge >= 0
         break

@@ -23,10 +23,12 @@ class Ride
   end
 end
 
+# 【追加実装】Ticketクラス生成
 class Ticket
-  attr_reader :ride, :date
+  attr_reader :ride, :user, :date
 
-  def initialize(ride, date)
+  def initialize(ride, user, date)
+    @user = user
     @ride = ride
     @date = date
   end
@@ -38,6 +40,7 @@ class TicketVendingSystem
 
   def initialize(rides)
     @rides = rides
+    @users = []
     @created_at = Date.today
   end
 
@@ -45,6 +48,7 @@ class TicketVendingSystem
   def exec_transaction
     # ユーザーの作成
     new_user = User.new
+    @users << new_user
     puts '0. チケットを購入する'
     puts '1. 終了'
     num = gets.chomp.to_i
@@ -65,7 +69,7 @@ class TicketVendingSystem
   end
 
   # チケット一覧表示機能
-  def display_tickets(user)
+  def display_tickets
     if user.age < 5
       puts '申し訳ございません。お客様のお年齢では選択できるアトラクションはございません。'
       exit
@@ -79,6 +83,7 @@ class TicketVendingSystem
   # チケット選択機能
   def take_order
     ticket = Ticket.new(rides[gets.to_i], created_at)
+    # 期待されている数の引数が渡せていないため、ArgumentErrorが発生する
     puts "#{ticket.ride.name}が選択されました"
     ticket
   end

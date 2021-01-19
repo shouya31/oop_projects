@@ -4,8 +4,12 @@ require 'date'
 class TicketVendingSystem
   attr_reader :rides, :created_at
 
-  def initialize(rides)
-    @rides = rides
+  def initialize(_rides)
+    @rides =  [
+      { name: 'roller coaster', fee: 1200, exp_age: 8 },
+      { name: 'merry-go-round', fee: 1000, exp_age: 5 },
+      { name: 'jackie coaster', fee: 800, exp_age: 15 }
+    ]
     @created_at = Date.today
   end
 
@@ -73,10 +77,4 @@ class TicketVendingSystem
   end
 end
 
-rides = [
-  { name: 'roller coaster', fee: 1200, exp_age: 8 },
-  { name: 'merry-go-round', fee: 1000, exp_age: 5 },
-  { name: 'jackie coaster', fee: 800, exp_age: 15 }
-]
-
-TicketVendingSystem.new(rides).exec_transaction
+TicketVendingSystem.new.exec_transaction

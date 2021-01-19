@@ -26,20 +26,19 @@ end
 class Ticket
   attr_reader :ride, :date
 
-  def initialize(ride, date)
+  def initialize(ride)
     @ride = ride
-    @date = date
+    @date = Date.today
   end
 end
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :user, :rides, :created_at
+  attr_reader :user, :tickets
 
-  def initialize(user, rides)
+  def initialize(user, tickets)
     @user = user
-    @rides = rides
-    @created_at = Date.today
+    @tickets = tickets
   end
 
   # チケット購入機能
@@ -56,15 +55,15 @@ class TicketVendingSystem
       exit
     end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    @rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}" if user.age > ride.exp_age
+    tickets.ride.each_with_index do |ticket, i|
+      puts "[#{i}] 商品名：#{ticket.name} 価格：#{ticket.fee}" if user.age > ticket.exp_age
     end
   end
 
   # チケット発券機能
   def take_order
-    ticket = Ticket.new(@rides[gets.to_i], created_at)
-    puts "#{ticket.ride.name}が選択されました"
+    ticket = tickets.ride[gets.to_i]
+    puts "#{ticket.name}が選択されました"
     ticket
   end
 
@@ -87,7 +86,7 @@ class TicketVendingSystem
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ticket.ride.fee)
+      charge = calc_change(payment, ticket.fee)
 
       if charge >= 0
         break
@@ -112,4 +111,4 @@ rides = [
 ]
 
 @rides = rides.map { |b| Ride.new(b[:name], b[:fee], b[:exp_age]) }
-TicketVendingSystem.new(User.new, @rides).exec_transaction
+TicketVendingSystem.new(User.new, Ticket.new(@rides)).exec_transaction
