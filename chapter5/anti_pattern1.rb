@@ -23,27 +23,36 @@ class Ride
   end
 end
 
-class Ticket
-  attr_reader :ride, :date
-
-  def initialize(ride)
-    @ride = ride
-    @date = Date.today
-  end
-end
-
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :user, :tickets
+  attr_reader :users, :rides, :created_at
 
-  def initialize(user, tickets)
-    @user = user
-    @tickets = tickets
+  def initialize(rides)
+    @rides = rides
+    @users = []
+    @created_at = Date.today
+  end
+
+  # 販売機能実行
+  def exec_transaction
+    # ユーザーの作成
+    new_user = User.new
+    @users << new_user
+    puts '0. チケットを購入する'
+    puts '1. 終了'
+    num = gets.chomp.to_i
+    if num == 0
+      transaction(new_user)
+    elsif num == 1
+      exit
+    else
+      puts '不正な入力です'
+    end
   end
 
   # チケット購入機能
-  def transaction
-    display_tickets
+  def transaction(user)
+    display_tickets(user)
     ticket = take_order
     serve_ticket(ticket)
   end
@@ -55,30 +64,16 @@ class TicketVendingSystem
       exit
     end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    tickets.ride.each_with_index do |ticket, i|
-      puts "[#{i}] 商品名：#{ticket.name} 価格：#{ticket.fee}" if user.age > ticket.exp_age
+    rides.each_with_index do |ride, i|
+      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}" if user.age > ride.exp_age
     end
   end
 
-  # チケット発券機能
+  # チケット選択機能
   def take_order
-    ticket = tickets.ride[gets.to_i]
-    puts "#{ticket.name}が選択されました"
-    ticket
-  end
-
-  # 販売機能実行
-  def exec_transaction
-    puts '0. チケットを購入する'
-    puts '1. 終了'
-    num = gets.chomp.to_i
-    if num == 0
-      transaction
-    elsif num == 1
-      exit
-    else
-      puts '不正な入力です'
-    end
+    ride = rides[gets.to_i]
+    puts "#{ride.name}が選択されました"
+    ride
   end
 
   # 決済処理
@@ -86,7 +81,7 @@ class TicketVendingSystem
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ticket.fee)
+      charge = calc_change(payment, ticket.ride.fee)
 
       if charge >= 0
         break
@@ -111,4 +106,4 @@ rides = [
 ]
 
 @rides = rides.map { |b| Ride.new(b[:name], b[:fee], b[:exp_age]) }
-TicketVendingSystem.new(User.new, Ticket.new(@rides)).exec_transaction
+TicketVendingSystem.new(@rides).exec_transaction
