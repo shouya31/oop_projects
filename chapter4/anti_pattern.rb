@@ -4,7 +4,7 @@ require 'date'
 class TicketVendingSystem
   attr_reader :rides, :created_at
 
-  def initialize(_rides)
+  def initialize(rides)
     @rides = [
       { name: 'roller coaster', fee: 1200 },
       { name: 'merry-go-round', fee: 1000 },
