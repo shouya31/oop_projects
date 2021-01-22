@@ -30,8 +30,8 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ticket = take_order
-    serve_ticket(ticket)
+    ticket = issue_ticket
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
@@ -43,14 +43,14 @@ class TicketVendingSystem
   end
 
   # チケット選択機能
-  def take_order
+  def issue_ticket
     ride = @rides[gets.to_i]
     puts "#{ride[:name]}が選択されました"
     ride
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
