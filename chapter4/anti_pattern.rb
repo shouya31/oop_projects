@@ -2,10 +2,10 @@ require 'date'
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :rides, :created_at
+  attr_reader :ride_info, :created_at
 
-  def initialize(rides)
-    @rides = [
+  def initialize
+    @ride_info = [
       { name: 'roller coaster', fee: 1200 },
       { name: 'merry-go-round', fee: 1000 },
       { name: 'jackie coaster', fee: 800 }
@@ -72,4 +72,4 @@ class TicketVendingSystem
   end
 end
 
-TicketVendingSystem.new(rides).exec_transaction
+TicketVendingSystem.new.exec_transaction
