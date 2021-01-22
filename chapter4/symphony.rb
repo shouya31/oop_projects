@@ -11,10 +11,10 @@ end
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :rides, :created_at
+  attr_reader :products, :created_at
 
-  def initialize(rides)
-    @rides = rides
+  def initialize(products)
+    @products = products
     @created_at = Date.today
   end
 
@@ -35,8 +35,8 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ride = take_order
-    serve_ticket(ride)
+    ride = issue_ticket
+    run_payment(ride)
   end
 
   # チケット一覧表示機能
@@ -49,14 +49,14 @@ class TicketVendingSystem
   end
 
   # チケット選択機能
-  def take_order
+  def issue_ticket
     ride = rides[gets.to_i]
     puts "#{ride.name}が選択されました"
     ride
   end
 
   # 決済処理
-  def serve_ticket(ride)
+  def run_payment(ride)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
@@ -84,5 +84,5 @@ rides = [
   { name: 'jackie coaster', fee: 800 }
 ]
 
-@rides = rides.map { |b| Ride.new(b[:name], b[:fee]) }
-TicketVendingSystem.new(@rides).exec_transaction
+rides_info = rides.map { |b| Ride.new(b[:name], b[:fee]) }
+TicketVendingSystem.new(rides_info).exec_transaction
