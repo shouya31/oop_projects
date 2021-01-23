@@ -1,25 +1,24 @@
 require 'date'
 
 class Ride
-  attr_reader :name, :fee, :exp_age
+  attr_reader :name, :fee
 
-  def initialize(name, fee, exp_age)
+  def initialize(name, fee)
     @name = name
     @fee = fee
-    @exp_age = exp_age
   end
 end
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :rides, :created_at
+  attr_reader :products, :created_at
 
-  def initialize(rides)
-    @rides = rides
+  def initialize(products)
+    @products = products
     @created_at = Date.today
   end
 
-  # 販売機能実行
+  # 発券機能実行
   def exec_transaction
     puts '0. チケットを購入する'
     puts '1. 終了'
@@ -36,33 +35,28 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ride = take_order
-    serve_ticket(ride)
+    ride = issue_ticket
+    run_payment(ride)
   end
 
   # チケット一覧表示機能
   def display_tickets
     puts '年齢を入力してください'
-    age = gets.chomp.to_i
-    if age < 5
-      puts '申し訳ございません。お客様のお年齢では選択できるアトラクションはございません。'
-      exit
-    end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
     rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}" if age > ride.exp_age
+      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}"
     end
   end
 
-  # チケット選択機能
-  def take_order
+  # チケット発券機能
+  def issue_ticket
     ride = rides[gets.to_i]
     puts "#{ride.name}が選択されました"
     ride
   end
 
   # 決済処理
-  def serve_ticket(ride)
+  def run_payment(ride)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
@@ -85,10 +79,10 @@ class TicketVendingSystem
 end
 
 rides = [
-  { name: 'roller coaster', fee: 1200, exp_age: 8 },
-  { name: 'merry-go-round', fee: 1000, exp_age: 5 },
-  { name: 'jackie coaster', fee: 800, exp_age: 15 }
+  { name: 'roller coaster', fee: 1200 },
+  { name: 'merry-go-round', fee: 1000 },
+  { name: 'jackie coaster', fee: 800 }
 ]
 
-@rides = rides.map { |b| Ride.new(b[:name], b[:fee], b[:exp_age]) }
-TicketVendingSystem.new(@rides).exec_transaction
+rides_info = rides.map { |b| Ride.new(b[:name], b[:fee]) }
+TicketVendingSystem.new(rides_info).exec_transaction

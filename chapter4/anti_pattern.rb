@@ -5,10 +5,10 @@ class TicketVendingSystem
   attr_reader :rides, :created_at
 
   def initialize(_rides)
-    @rides =  [
-      { name: 'roller coaster', fee: 1200, exp_age: 8 },
-      { name: 'merry-go-round', fee: 1000, exp_age: 5 },
-      { name: 'jackie coaster', fee: 800, exp_age: 15 }
+    @rides = [
+      { name: 'roller coaster', fee: 1200 },
+      { name: 'merry-go-round', fee: 1000 },
+      { name: 'jackie coaster', fee: 800 }
     ]
     @created_at = Date.today
   end
@@ -30,33 +30,27 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ticket = take_order
-    serve_ticket(ticket)
+    ticket = issue_ticket
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
   def display_tickets
-    puts '年齢を入力してください'
-    age = gets.chomp.to_i
-    if age < 5
-      puts '申し訳ございません。お客様のお年齢では選択できるアトラクションはございません。'
-      exit
-    end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride[:name]} 価格：#{ride[:fee]}" if age > ride[:exp_age]
+    @rides.each_with_index do |ride, i|
+      puts "[#{i}] 商品名：#{ride[:name]} 価格：#{ride[:fee]}"
     end
   end
 
   # チケット選択機能
-  def take_order
-    ride = rides[gets.to_i]
+  def issue_ticket
+    ride = @rides[gets.to_i]
     puts "#{ride[:name]}が選択されました"
     ride
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
@@ -72,9 +66,10 @@ class TicketVendingSystem
     puts "お釣りは#{charge}円です。ご利用ありがとうございました。"
   end
 
+  # お釣り算出機能
   def calc_change(payment, fee)
     payment - fee
   end
 end
 
-TicketVendingSystem.new.exec_transaction
+TicketVendingSystem.new(rides).exec_transaction

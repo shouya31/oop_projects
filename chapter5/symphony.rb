@@ -13,16 +13,17 @@ class User
   end
 end
 
+# アトラクションをモデリングしたクラス
 class Ride
-  attr_reader :name, :fee, :exp_age
+  attr_reader :name, :fee
 
-  def initialize(name, fee, exp_age)
+  def initialize(name, fee)
     @name = name
     @fee = fee
-    @exp_age = exp_age
   end
 end
 
+# チケットをモデリングしたクラス
 class Ticket
   attr_reader :ride, :date
 
@@ -44,24 +45,20 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ticket = take_order
-    serve_ticket(ticket)
+    ticket = issue_ticket
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
   def display_tickets
-    if user.age < 5
-      puts '申し訳ございません。お客様のお年齢では選択できるアトラクションはございません。'
-      exit
-    end
     puts '購入したいチケットを以下から選んで、金額を入力してください'
     tickets.ride.each_with_index do |ticket, i|
-      puts "[#{i}] 商品名：#{ticket.name} 価格：#{ticket.fee}" if user.age > ticket.exp_age
+      puts "[#{i}] 商品名：#{ticket.name} 価格：#{ticket.fee}"
     end
   end
 
   # チケット発券機能
-  def take_order
+  def issue_ticket
     ticket = tickets.ride[gets.to_i]
     puts "#{ticket.name}が選択されました"
     ticket
@@ -82,7 +79,7 @@ class TicketVendingSystem
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
@@ -105,10 +102,10 @@ class TicketVendingSystem
 end
 
 rides = [
-  { name: 'roller coaster', fee: 1200, exp_age: 8 },
-  { name: 'merry-go-round', fee: 1000, exp_age: 5 },
-  { name: 'jackie coaster', fee: 800, exp_age: 15 }
+  { name: 'roller coaster', fee: 1200 },
+  { name: 'merry-go-round', fee: 1000 },
+  { name: 'jackie coaster', fee: 800 }
 ]
 
-@rides = rides.map { |b| Ride.new(b[:name], b[:fee], b[:exp_age]) }
-TicketVendingSystem.new(User.new, Ticket.new(@rides)).exec_transaction
+rides_info = rides.map { |b| Ride.new(b[:name], b[:fee]) }
+TicketVendingSystem.new(User.new, Ticket.new(rides_info)).exec_transaction
