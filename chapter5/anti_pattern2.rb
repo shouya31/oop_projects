@@ -1,5 +1,19 @@
 require 'date'
 
+# お客さんをモデリングしたクラス
+class User
+  attr_accessor :name, :age
+
+  def initialize
+    puts 'ユーザー登録を行います'
+    puts 'ユーザー名を入力してください'
+    @name = gets.chomp
+    puts '年齢を入力してください'
+    @age = gets.chomp.to_i
+  end
+end
+
+# アトラクションをモデリングしたクラス
 class Ride
   attr_reader :name, :fee
 
@@ -9,22 +23,37 @@ class Ride
   end
 end
 
+# チケットをモデリングしたクラス
+class Ticket
+  attr_reader :ride, :user, :date
+
+  def initialize(ride, user, date)
+    @user = user
+    @ride = ride
+    @date = date
+  end
+end
+
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :products, :created_at
+  attr_reader :users, :products, :created_at
 
   def initialize(products)
     @products = products
+    @users = []
     @created_at = Date.today
   end
 
-  # 発券機能実行
+  # 販売機能実行
   def exec_transaction
+    # ユーザーの作成
+    new_user = User.new
+    @users << new_user
     puts '0. チケットを購入する'
     puts '1. 終了'
     num = gets.chomp.to_i
     if num == 0
-      transaction
+      transaction(new_user)
     elsif num == 1
       exit
     else
@@ -33,34 +62,34 @@ class TicketVendingSystem
   end
 
   # チケット購入機能
-  def transaction
+  def transaction(user)
     display_tickets
-    ride = issue_ticket
-    run_payment(ride)
+    ticket = issue_ticket(user)
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
   def display_tickets
-    puts '年齢を入力してください'
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}"
+    products.each_with_index do |product, i|
+      puts "[#{i}] 商品名：#{product.name} 価格：#{product.fee}"
     end
   end
 
   # チケット発券機能
-  def issue_ticket
-    ride = rides[gets.to_i]
-    puts "#{ride.name}が選択されました"
-    ride
+  def issue_ticket(user)
+    ticket = Ticket.new(products[gets.to_i], created_at)
+    # 期待されている数の引数が渡せていないため、ArgumentErrorが発生する
+    puts "#{ticket.ride.name}が選択されました"
+    ticket
   end
 
   # 決済処理
-  def run_payment(ride)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ride.fee)
+      charge = calc_change(payment, ticket.fee)
 
       if charge >= 0
         break
