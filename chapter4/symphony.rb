@@ -43,14 +43,14 @@ class TicketVendingSystem
   def display_tickets
     puts '年齢を入力してください'
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}"
+    products.each_with_index do |product, i|
+      puts "[#{i}] 商品名：#{product.name} 価格：#{product.fee}"
     end
   end
 
   # チケット選択機能
   def issue_ticket
-    ride = rides[gets.to_i]
+    ride = products[gets.to_i]
     puts "#{ride.name}が選択されました"
     ride
   end
