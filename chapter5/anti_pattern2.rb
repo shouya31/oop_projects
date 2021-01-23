@@ -13,6 +13,7 @@ class User
   end
 end
 
+# アトラクションをモデリングしたクラス
 class Ride
   attr_reader :name, :fee
 
@@ -22,7 +23,7 @@ class Ride
   end
 end
 
-# 【追加実装】Ticketクラス生成
+# チケットをモデリングしたクラス
 class Ticket
   attr_reader :ride, :user, :date
 
@@ -35,10 +36,10 @@ end
 
 # 券売機をモデリングしたクラス
 class TicketVendingSystem
-  attr_reader :users, :rides, :created_at
+  attr_reader :users, :products, :created_at
 
-  def initialize(rides)
-    @rides = rides
+  def initialize(products)
+    @products = products
     @users = []
     @created_at = Date.today
   end
@@ -62,33 +63,33 @@ class TicketVendingSystem
 
   # チケット購入機能
   def transaction(user)
-    display_tickets(user)
-    ticket = take_order
-    serve_ticket(ticket)
+    display_tickets
+    ticket = issue_ticket(user)
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
   def display_tickets
     puts '購入したいチケットを以下から選んで、金額を入力してください'
-    rides.each_with_index do |ride, i|
-      puts "[#{i}] 商品名：#{ride.name} 価格：#{ride.fee}"
+    products.each_with_index do |product, i|
+      puts "[#{i}] 商品名：#{product.name} 価格：#{product.fee}"
     end
   end
 
-  # チケット選択機能
-  def take_order
-    ticket = Ticket.new(rides[gets.to_i], created_at)
+  # チケット発券機能
+  def issue_ticket(user)
+    ticket = Ticket.new(products[gets.to_i], created_at)
     # 期待されている数の引数が渡せていないため、ArgumentErrorが発生する
     puts "#{ticket.ride.name}が選択されました"
     ticket
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
-      charge = calc_change(payment, ticket.ride.fee)
+      charge = calc_change(payment, ticket.fee)
 
       if charge >= 0
         break
@@ -112,5 +113,5 @@ rides = [
   { name: 'jackie coaster', fee: 800 }
 ]
 
-@rides = rides.map { |b| Ride.new(b[:name], b[:fee]) }
-TicketVendingSystem.new(@rides).exec_transaction
+rides_info = rides.map { |b| Ride.new(b[:name], b[:fee]) }
+TicketVendingSystem.new(rides_info).exec_transaction

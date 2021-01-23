@@ -18,7 +18,7 @@ class TicketVendingSystem
     @created_at = Date.today
   end
 
-  # 販売機能実行
+  # 発券機能実行
   def exec_transaction
     puts '0. チケットを購入する'
     puts '1. 終了'
@@ -48,7 +48,7 @@ class TicketVendingSystem
     end
   end
 
-  # チケット選択機能
+  # チケット発券機能
   def issue_ticket
     ride = rides[gets.to_i]
     puts "#{ride.name}が選択されました"

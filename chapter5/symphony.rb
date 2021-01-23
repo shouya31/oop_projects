@@ -13,6 +13,7 @@ class User
   end
 end
 
+# アトラクションをモデリングしたクラス
 class Ride
   attr_reader :name, :fee
 
@@ -22,6 +23,7 @@ class Ride
   end
 end
 
+# チケットをモデリングしたクラス
 class Ticket
   attr_reader :ride, :date
 
@@ -43,8 +45,8 @@ class TicketVendingSystem
   # チケット購入機能
   def transaction
     display_tickets
-    ticket = take_order
-    serve_ticket(ticket)
+    ticket = issue_ticket
+    run_payment(ticket)
   end
 
   # チケット一覧表示機能
@@ -56,7 +58,7 @@ class TicketVendingSystem
   end
 
   # チケット発券機能
-  def take_order
+  def issue_ticket
     ticket = tickets.ride[gets.to_i]
     puts "#{ticket.name}が選択されました"
     ticket
@@ -77,7 +79,7 @@ class TicketVendingSystem
   end
 
   # 決済処理
-  def serve_ticket(ticket)
+  def run_payment(ticket)
     puts 'お金をいれてください'
     while true
       payment = gets.to_i
@@ -105,5 +107,5 @@ rides = [
   { name: 'jackie coaster', fee: 800 }
 ]
 
-@rides = rides.map { |b| Ride.new(b[:name], b[:fee]) }
-TicketVendingSystem.new(User.new, Ticket.new(@rides)).exec_transaction
+rides_info = rides.map { |b| Ride.new(b[:name], b[:fee]) }
+TicketVendingSystem.new(User.new, Ticket.new(rides_info)).exec_transaction
