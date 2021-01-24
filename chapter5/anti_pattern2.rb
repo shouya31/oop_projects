@@ -25,10 +25,9 @@ end
 
 # チケットをモデリングしたクラス
 class Ticket
-  attr_reader :ride, :user, :date
+  attr_reader :ride, :date
 
-  def initialize(ride, user, date)
-    @user = user
+  def initialize(ride, date)
     @ride = ride
     @date = date
   end
@@ -53,7 +52,7 @@ class TicketVendingSystem
     puts '1. 終了'
     num = gets.chomp.to_i
     if num == 0
-      transaction(new_user)
+      transaction
     elsif num == 1
       exit
     else
@@ -62,9 +61,9 @@ class TicketVendingSystem
   end
 
   # チケット購入機能
-  def transaction(user)
+  def transaction
     display_tickets
-    ticket = issue_ticket(user)
+    ticket = issue_ticket
     run_payment(ticket)
   end
 
@@ -77,8 +76,8 @@ class TicketVendingSystem
   end
 
   # チケット発券機能
-  def issue_ticket(user)
-    ticket = Ticket.new(products[gets.to_i], created_at)
+  def issue_ticket
+    ticket = Ticket.new(products[gets.to_i])
     # 期待されている数の引数が渡せていないため、ArgumentErrorが発生する
     puts "#{ticket.ride.name}が選択されました"
     ticket
