@@ -77,7 +77,7 @@ class TicketVendingSystem
   end
 
   # チケット発券機能
-  def issue_ticket(user)
+  def issue_ticket(_user)
     ticket = Ticket.new(products[gets.to_i], created_at)
     # 期待されている数の引数が渡せていないため、ArgumentErrorが発生する
     puts "#{ticket.ride.name}が選択されました"
